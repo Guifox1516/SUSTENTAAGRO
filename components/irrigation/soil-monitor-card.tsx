@@ -1,5 +1,6 @@
 "use client"
 
+import { useState, useEffect } from "react"
 import { Droplets, TrendingUp, TrendingDown, Minus } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Progress } from "@/components/ui/progress"
@@ -12,27 +13,40 @@ const getMoistureStatus = (moisture: number) => {
   return { label: "Úmido", color: "text-accent", bgColor: "bg-accent/20", progressColor: "bg-accent" }
 }
 
-const getTrend = (current: number, previous: number) => {
+type TrendType = {
+  icon: typeof TrendingUp | typeof TrendingDown | typeof Minus
+  label: string
+  color: string
+}
+
+const getTrend = (current: number, previous: number): TrendType => {
   const diff = current - previous
   if (Math.abs(diff) < 2) return { icon: Minus, label: "Estável", color: "text-muted-foreground" }
   if (diff > 0) return { icon: TrendingUp, label: "Subindo", color: "text-primary" }
   return { icon: TrendingDown, label: "Descendo", color: "text-orange-400" }
 }
 
+// Default stable trend for SSR
+const defaultTrend: TrendType = { icon: Minus, label: "Estável", color: "text-muted-foreground" }
+
 export function SoilMonitorCard() {
   const { sensors, sensorHistory } = useIrrigationStore()
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   // Calculate average moisture
   const averageMoisture = Math.round(
     sensors.reduce((acc, s) => acc + s.soilMoisture, 0) / sensors.length
   )
   
-  // Get previous average (from history)
-  const previousAverage = sensorHistory.length > 1 
-    ? sensorHistory[sensorHistory.length - 2]?.soilMoisture || averageMoisture 
-    : averageMoisture
+  // Calculate trend only on client to avoid hydration mismatch
+  const trend = mounted && sensorHistory.length > 1
+    ? getTrend(averageMoisture, sensorHistory[sensorHistory.length - 2]?.soilMoisture || averageMoisture)
+    : defaultTrend
 
-  const trend = getTrend(averageMoisture, previousAverage)
   const TrendIcon = trend.icon
 
   return (

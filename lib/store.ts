@@ -53,6 +53,7 @@ export interface SustainabilityMetrics {
   traditionalUsage: number // liters (estimated without system)
   co2Reduced: number // kg
   irrigationEvents: number
+  hasData: boolean // indica se há dados reais ou simulação ativada
 }
 
 export interface HistoryEntry {
@@ -82,7 +83,11 @@ interface IrrigationStore {
   // Notifications
   notifications: { id: string; message: string; type: 'info' | 'warning' | 'success'; timestamp: Date }[]
   
+  // Simulation control
+  simulationEnabled: boolean
+  
   // Actions
+  toggleSimulation: () => void
   updateSensorData: (sensorId: string, moisture: number) => void
   toggleIrrigator: (irrigatorId: string) => void
   togglePump: (pumpId: string) => void
@@ -153,13 +158,40 @@ export const useIrrigationStore = create<IrrigationStore>()(
       automationRules: [],
       
       sustainability: {
-        waterSaved: 15420,
-        traditionalUsage: 45000,
-        co2Reduced: 28.5,
-        irrigationEvents: 156
+        waterSaved: 0,
+        traditionalUsage: 0,
+        co2Reduced: 0,
+        irrigationEvents: 0,
+        hasData: false
       },
       
+      simulationEnabled: false,
+      
       notifications: [],
+      
+      toggleSimulation: () => {
+        set((state) => {
+          const newEnabled = !state.simulationEnabled
+          if (newEnabled && !state.sustainability.hasData) {
+            // Quando ativa simulação, inicializa dados de sustentabilidade
+            return {
+              simulationEnabled: newEnabled,
+              sustainability: {
+                waterSaved: 0,
+                traditionalUsage: 0,
+                co2Reduced: 0,
+                irrigationEvents: 0,
+                hasData: true
+              }
+            }
+          }
+          return { simulationEnabled: newEnabled }
+        })
+        get().addNotification(
+          get().simulationEnabled ? 'Simulação desativada' : 'Simulação ativada',
+          'info'
+        )
+      },
       
       updateSensorData: (sensorId, moisture) => {
         set((state) => ({
@@ -285,21 +317,26 @@ export const useIrrigationStore = create<IrrigationStore>()(
       },
       
       updateSustainability: (waterUsed) => {
-        set((state) => ({
-          sustainability: {
-            ...state.sustainability,
-            waterSaved: state.sustainability.waterSaved + (waterUsed * 0.3), // 30% savings estimate
-            irrigationEvents: state.sustainability.irrigationEvents + 1,
-            co2Reduced: state.sustainability.co2Reduced + (waterUsed * 0.002) // CO2 estimate
+        set((state) => {
+          if (!state.sustainability.hasData) return state
+          return {
+            sustainability: {
+              ...state.sustainability,
+              waterSaved: state.sustainability.waterSaved + (waterUsed * 0.3), // 30% savings estimate
+              traditionalUsage: state.sustainability.traditionalUsage + waterUsed,
+              irrigationEvents: state.sustainability.irrigationEvents + 1,
+              co2Reduced: state.sustainability.co2Reduced + (waterUsed * 0.002) // CO2 estimate
+            }
           }
-        }))
+        })
       }
     }),
     {
       name: 'irrigation-storage',
       partialize: (state) => ({
         automationRules: state.automationRules,
-        sustainability: state.sustainability
+        sustainability: state.sustainability,
+        simulationEnabled: state.simulationEnabled
       })
     }
   )
