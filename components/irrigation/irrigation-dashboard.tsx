@@ -9,9 +9,9 @@ import { IrrigationControlCard } from "./irrigation-control-card"
 import { AutomationCard } from "./automation-card"
 import { SustainabilityCard } from "./sustainability-card"
 import { MoistureHistoryChart } from "./moisture-history-chart"
-import { useSimulation } from "@/lib/store"
-import { Droplets, Power, Leaf, Gauge } from "lucide-react"
-import { useIrrigationStore } from "@/lib/store"
+import { MeteorologyCard } from "./meteorology-card"
+import { useSimulation, useIrrigationStore } from "@/lib/store"
+import { Droplets, Power, AlertCircle } from "lucide-react"
 
 const sectionConfig = {
   dashboard: {
@@ -21,6 +21,10 @@ const sectionConfig = {
   monitoring: {
     title: "Monitoramento do Solo",
     description: "Acompanhe a umidade em tempo real"
+  },
+  meteorology: {
+    title: "Meteorologia",
+    description: "Dados climáticos e previsão do tempo"
   },
   control: {
     title: "Controle de Irrigação",
@@ -37,40 +41,40 @@ const sectionConfig = {
 }
 
 function QuickStats() {
-  const { sensors, irrigators, sustainability } = useIrrigationStore()
+  const { sensors, irrigators, simulationEnabled } = useIrrigationStore()
   
   const avgMoisture = Math.round(
     sensors.reduce((acc, s) => acc + s.soilMoisture, 0) / sensors.length
   )
   const activeIrrigators = irrigators.filter(i => i.isActive).length
-  const savingsPercentage = Math.round(
-    (sustainability.waterSaved / sustainability.traditionalUsage) * 100
-  )
+  
+  // Verifica se há sensores com umidade baixa
+  const lowMoistureSensors = sensors.filter(s => s.soilMoisture < 30).length
 
   const stats = [
     {
       label: "Umidade Média",
       value: `${avgMoisture}%`,
       icon: Droplets,
-      color: "text-accent"
+      color: avgMoisture < 30 ? "text-destructive" : avgMoisture < 50 ? "text-yellow-400" : "text-accent"
     },
     {
       label: "Irrigadores Ativos",
       value: `${activeIrrigators}/${irrigators.length}`,
       icon: Power,
-      color: "text-primary"
+      color: activeIrrigators > 0 ? "text-primary" : "text-muted-foreground"
     },
     {
-      label: "Água Economizada",
-      value: `${(sustainability.waterSaved / 1000).toFixed(1)}k L`,
-      icon: Gauge,
-      color: "text-yellow-400"
+      label: "Alertas de Solo Seco",
+      value: lowMoistureSensors,
+      icon: AlertCircle,
+      color: lowMoistureSensors > 0 ? "text-destructive" : "text-primary"
     },
     {
-      label: "Economia vs Tradicional",
-      value: `${savingsPercentage}%`,
-      icon: Leaf,
-      color: "text-primary"
+      label: "Status do Sistema",
+      value: simulationEnabled ? "Simulação" : "Real",
+      icon: Droplets,
+      color: simulationEnabled ? "text-yellow-400" : "text-primary"
     }
   ]
 
@@ -95,15 +99,18 @@ function QuickStats() {
 export function IrrigationDashboard() {
   const [activeSection, setActiveSection] = useState("dashboard")
   const { simulateSensorUpdate } = useSimulation()
+  const { simulationEnabled } = useIrrigationStore()
 
-  // Simulate sensor updates every 30 seconds
+  // Simulate sensor updates every 30 seconds only if simulation is enabled
   useEffect(() => {
+    if (!simulationEnabled) return
+    
     const interval = setInterval(() => {
       simulateSensorUpdate()
     }, 30000)
 
     return () => clearInterval(interval)
-  }, [simulateSensorUpdate])
+  }, [simulateSensorUpdate, simulationEnabled])
 
   const currentSection = sectionConfig[activeSection as keyof typeof sectionConfig]
 
@@ -135,10 +142,12 @@ export function IrrigationDashboard() {
           <div className="grid gap-6 lg:grid-cols-2">
             <SoilMonitorCard />
             <MoistureHistoryChart />
-            <div className="lg:col-span-2">
-              <WeatherCard />
-            </div>
           </div>
+        )}
+
+        {/* Meteorology View */}
+        {activeSection === "meteorology" && (
+          <MeteorologyCard />
         )}
 
         {/* Control View */}

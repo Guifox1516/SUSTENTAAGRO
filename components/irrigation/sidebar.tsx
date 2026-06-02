@@ -10,7 +10,8 @@ import {
   Settings,
   Menu,
   X,
-  Sprout
+  Sprout,
+  Cloud
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
@@ -23,6 +24,7 @@ interface SidebarProps {
 const navItems = [
   { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },
   { id: "monitoring", label: "Monitoramento", icon: Droplets },
+  { id: "meteorology", label: "Meteorologia", icon: Cloud },
   { id: "control", label: "Controle", icon: Power },
   { id: "automation", label: "Automação", icon: Bot },
   { id: "sustainability", label: "Sustentabilidade", icon: Leaf },
