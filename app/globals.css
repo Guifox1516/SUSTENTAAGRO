@@ -4,57 +4,63 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  /* AgroIrriga Theme - Natural & Agricultural */
-  --background: oklch(0.12 0.01 150);
-  --foreground: oklch(0.95 0.01 150);
-  --card: oklch(0.16 0.015 150);
-  --card-foreground: oklch(0.95 0.01 150);
-  --popover: oklch(0.14 0.012 150);
-  --popover-foreground: oklch(0.95 0.01 150);
-  --primary: oklch(0.65 0.18 145);
-  --primary-foreground: oklch(0.12 0.01 150);
-  --secondary: oklch(0.22 0.02 150);
-  --secondary-foreground: oklch(0.95 0.01 150);
-  --muted: oklch(0.20 0.015 150);
-  --muted-foreground: oklch(0.65 0.02 150);
-  --accent: oklch(0.55 0.15 200);
-  --accent-foreground: oklch(0.95 0.01 150);
-  --destructive: oklch(0.55 0.22 25);
-  --destructive-foreground: oklch(0.95 0.01 150);
-  --border: oklch(0.25 0.02 150);
-  --input: oklch(0.20 0.015 150);
-  --ring: oklch(0.65 0.18 145);
+  /* Sustentra Agro Theme - Professional Agricultural Technology */
+  --background: oklch(0.08 0.008 160);
+  --foreground: oklch(0.95 0.005 160);
+  --card: oklch(0.12 0.012 160);
+  --card-foreground: oklch(0.95 0.005 160);
+  --popover: oklch(0.10 0.010 160);
+  --popover-foreground: oklch(0.95 0.005 160);
+  --primary: oklch(0.72 0.19 150);
+  --primary-foreground: oklch(0.08 0.008 160);
+  --secondary: oklch(0.18 0.015 160);
+  --secondary-foreground: oklch(0.95 0.005 160);
+  --muted: oklch(0.16 0.012 160);
+  --muted-foreground: oklch(0.60 0.015 160);
+  --accent: oklch(0.58 0.14 210);
+  --accent-foreground: oklch(0.95 0.005 160);
+  --destructive: oklch(0.58 0.20 25);
+  --destructive-foreground: oklch(0.95 0.005 160);
+  --border: oklch(0.22 0.018 160);
+  --input: oklch(0.16 0.012 160);
+  --ring: oklch(0.72 0.19 150);
   
   /* Chart colors - Agricultural palette */
-  --chart-1: oklch(0.65 0.18 145);
-  --chart-2: oklch(0.55 0.15 200);
-  --chart-3: oklch(0.70 0.15 85);
-  --chart-4: oklch(0.60 0.12 50);
-  --chart-5: oklch(0.50 0.10 180);
+  --chart-1: oklch(0.72 0.19 150);
+  --chart-2: oklch(0.58 0.14 210);
+  --chart-3: oklch(0.75 0.16 90);
+  --chart-4: oklch(0.65 0.14 45);
+  --chart-5: oklch(0.55 0.12 280);
   
-  --radius: 0.75rem;
+  --radius: 0.625rem;
   
   /* Sidebar */
-  --sidebar: oklch(0.10 0.01 150);
-  --sidebar-foreground: oklch(0.95 0.01 150);
-  --sidebar-primary: oklch(0.65 0.18 145);
-  --sidebar-primary-foreground: oklch(0.12 0.01 150);
-  --sidebar-accent: oklch(0.18 0.015 150);
-  --sidebar-accent-foreground: oklch(0.95 0.01 150);
-  --sidebar-border: oklch(0.22 0.02 150);
-  --sidebar-ring: oklch(0.65 0.18 145);
+  --sidebar: oklch(0.06 0.006 160);
+  --sidebar-foreground: oklch(0.95 0.005 160);
+  --sidebar-primary: oklch(0.72 0.19 150);
+  --sidebar-primary-foreground: oklch(0.08 0.008 160);
+  --sidebar-accent: oklch(0.14 0.012 160);
+  --sidebar-accent-foreground: oklch(0.95 0.005 160);
+  --sidebar-border: oklch(0.18 0.015 160);
+  --sidebar-ring: oklch(0.72 0.19 150);
   
-  /* Custom irrigation colors */
-  --soil-dry: oklch(0.60 0.15 50);
-  --soil-ideal: oklch(0.65 0.18 145);
-  --soil-wet: oklch(0.55 0.15 200);
-  --water: oklch(0.60 0.12 220);
-  --warning: oklch(0.75 0.18 85);
+  /* Custom Sustentra colors */
+  --soil-dry: oklch(0.65 0.16 45);
+  --soil-ideal: oklch(0.72 0.19 150);
+  --soil-wet: oklch(0.58 0.14 210);
+  --water: oklch(0.62 0.14 230);
+  --warning: oklch(0.80 0.18 90);
+  --success: oklch(0.72 0.19 150);
+  --info: oklch(0.58 0.14 210);
+  
+  /* Gradients */
+  --gradient-primary: linear-gradient(135deg, oklch(0.72 0.19 150), oklch(0.58 0.14 180));
+  --gradient-accent: linear-gradient(135deg, oklch(0.58 0.14 210), oklch(0.55 0.12 280));
 }
 
 @theme inline {
-  --font-sans: 'Geist', 'Geist Fallback', system-ui, sans-serif;
-  --font-mono: 'Geist Mono', 'Geist Mono Fallback', monospace;
+  --font-sans: 'Inter', 'Geist', system-ui, sans-serif;
+  --font-mono: 'Geist Mono', 'Fira Code', monospace;
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -102,22 +108,75 @@
   }
 }
 
-/* Custom scrollbar for the agricultural theme */
+/* Custom scrollbar */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--muted);
-  border-radius: 4px;
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
   background: var(--border);
-  border-radius: 4px;
+  border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
   background: var(--primary);
+}
+
+/* Animations */
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.4); }
+  50% { box-shadow: 0 0 20px 5px rgba(34, 197, 94, 0.2); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes gradient-shift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+.animate-gradient {
+  background-size: 200% 200%;
+  animation: gradient-shift 3s ease infinite;
+}
+
+/* Glass effect */
+.glass {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* Status indicators */
+.status-active {
+  @apply bg-primary/20 text-primary border-primary/30;
+}
+
+.status-warning {
+  @apply bg-yellow-500/20 text-yellow-400 border-yellow-500/30;
+}
+
+.status-danger {
+  @apply bg-destructive/20 text-destructive border-destructive/30;
+}
+
+.status-idle {
+  @apply bg-muted text-muted-foreground border-border;
 }

@@ -1,14 +1,23 @@
-import type { Metadata } from 'next'
-import { Geist, Geist_Mono } from 'next/font/google'
+import type { Metadata, Viewport } from 'next'
+import { Inter, Geist_Mono } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import './globals.css'
 
-const _geist = Geist({ subsets: ["latin"] });
-const _geistMono = Geist_Mono({ subsets: ["latin"] });
+const inter = Inter({ 
+  subsets: ["latin"],
+  variable: "--font-sans"
+})
+
+const geistMono = Geist_Mono({ 
+  subsets: ["latin"],
+  variable: "--font-mono"
+})
 
 export const metadata: Metadata = {
-  title: 'AgroIrriga - Irrigação Inteligente',
-  description: 'Sistema de irrigação automática inteligente para agricultura sustentável. Monitore umidade do solo, controle irrigadores e economize água.',
+  title: 'Sustentra Agro - Irrigacao Inteligente',
+  description: 'Plataforma de irrigacao automatica inteligente para agricultura sustentavel. Monitore sensores, controle dispositivos IoT, crie automacoes e economize agua.',
+  keywords: ['irrigacao', 'agricultura', 'IoT', 'sustentabilidade', 'automacao', 'agro', 'tecnologia'],
+  authors: [{ name: 'Sustentra' }],
   generator: 'v0.app',
   icons: {
     icon: [
@@ -29,14 +38,20 @@ export const metadata: Metadata = {
   },
 }
 
+export const viewport: Viewport = {
+  themeColor: '#22c55e',
+  width: 'device-width',
+  initialScale: 1,
+}
+
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode
 }>) {
   return (
-    <html lang="pt-BR" className="bg-background">
-      <body className="font-sans antialiased">
+    <html lang="pt-BR" className={`${inter.variable} ${geistMono.variable} bg-background`}>
+      <body className="font-sans antialiased min-h-screen">
         {children}
         {process.env.NODE_ENV === 'production' && <Analytics />}
       </body>
