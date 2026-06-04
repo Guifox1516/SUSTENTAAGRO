@@ -2,11 +2,11 @@
 
 import { AppSidebar } from "@/components/sustentra/app-sidebar"
 import { AppHeader } from "@/components/sustentra/app-header"
-import { MainDashboard } from "@/components/sustentra/main-dashboard"
+import { DevicesPage } from "@/components/sustentra/devices-page"
 import { OnboardingFlow } from "@/components/sustentra/onboarding-flow"
 import { useSustentraStore } from "@/lib/sustentra-store"
 
-export default function Home() {
+export default function Devices() {
   const { onboardingCompleted } = useSustentraStore()
 
   return (
@@ -21,12 +21,7 @@ export default function Home() {
             <AppHeader />
             
             <main className="flex-1 p-4 md:p-6 overflow-auto">
-              <div className="mb-6">
-                <h1 className="text-2xl font-bold text-foreground">Dashboard</h1>
-                <p className="text-muted-foreground">Visao geral do seu sistema de irrigacao</p>
-              </div>
-              
-              <MainDashboard />
+              <DevicesPage />
             </main>
           </div>
         </div>
