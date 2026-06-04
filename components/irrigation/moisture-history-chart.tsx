@@ -1,6 +1,6 @@
 "use client"
 
-import { useMemo } from "react"
+import { useMemo, useState, useEffect } from "react"
 import { TrendingUp, Calendar } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import {
@@ -17,22 +17,37 @@ import { format } from "date-fns"
 import { ptBR } from "date-fns/locale"
 
 export function MoistureHistoryChart() {
+  const [mounted, setMounted] = useState(false)
   const { sensorHistory } = useIrrigationStore()
 
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
   const chartData = useMemo(() => {
+    if (!mounted) return []
     return sensorHistory.map((entry) => ({
       time: format(new Date(entry.timestamp), "HH:mm", { locale: ptBR }),
       moisture: Math.round(entry.soilMoisture),
       fullTime: format(new Date(entry.timestamp), "dd/MM HH:mm", { locale: ptBR })
     }))
-  }, [sensorHistory])
+  }, [sensorHistory, mounted])
 
-  // Calculate stats
-  const avgMoisture = Math.round(
-    sensorHistory.reduce((acc, e) => acc + e.soilMoisture, 0) / sensorHistory.length
-  )
-  const maxMoisture = Math.round(Math.max(...sensorHistory.map(e => e.soilMoisture)))
-  const minMoisture = Math.round(Math.min(...sensorHistory.map(e => e.soilMoisture)))
+  // Calculate stats only on client
+  const stats = useMemo(() => {
+    if (!mounted || sensorHistory.length === 0) {
+      return { avgMoisture: 0, maxMoisture: 0, minMoisture: 0 }
+    }
+    return {
+      avgMoisture: Math.round(
+        sensorHistory.reduce((acc, e) => acc + e.soilMoisture, 0) / sensorHistory.length
+      ),
+      maxMoisture: Math.round(Math.max(...sensorHistory.map(e => e.soilMoisture))),
+      minMoisture: Math.round(Math.min(...sensorHistory.map(e => e.soilMoisture)))
+    }
+  }, [sensorHistory, mounted])
+
+  const { avgMoisture, maxMoisture, minMoisture } = stats
 
   return (
     <Card className="bg-card border-border">
@@ -53,15 +68,15 @@ export function MoistureHistoryChart() {
         <div className="grid grid-cols-3 gap-3 mb-4">
           <div className="p-2 bg-secondary/50 rounded-lg text-center">
             <p className="text-xs text-muted-foreground">Média</p>
-            <p className="text-lg font-bold text-foreground">{avgMoisture}%</p>
+            <p className="text-lg font-bold text-foreground">{mounted ? `${avgMoisture}%` : "-"}</p>
           </div>
           <div className="p-2 bg-secondary/50 rounded-lg text-center">
             <p className="text-xs text-muted-foreground">Máxima</p>
-            <p className="text-lg font-bold text-accent">{maxMoisture}%</p>
+            <p className="text-lg font-bold text-accent">{mounted ? `${maxMoisture}%` : "-"}</p>
           </div>
           <div className="p-2 bg-secondary/50 rounded-lg text-center">
             <p className="text-xs text-muted-foreground">Mínima</p>
-            <p className="text-lg font-bold text-orange-400">{minMoisture}%</p>
+            <p className="text-lg font-bold text-orange-400">{mounted ? `${minMoisture}%` : "-"}</p>
           </div>
         </div>
 
