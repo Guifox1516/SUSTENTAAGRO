@@ -68,15 +68,21 @@ export function MoistureHistoryChart() {
         <div className="grid grid-cols-3 gap-3 mb-4">
           <div className="p-2 bg-secondary/50 rounded-lg text-center">
             <p className="text-xs text-muted-foreground">Média</p>
-            <p className="text-lg font-bold text-foreground">{mounted ? `${avgMoisture}%` : "-"}</p>
+            <p className="text-lg font-bold text-foreground" suppressHydrationWarning>
+              {mounted ? `${avgMoisture}%` : "-"}
+            </p>
           </div>
           <div className="p-2 bg-secondary/50 rounded-lg text-center">
             <p className="text-xs text-muted-foreground">Máxima</p>
-            <p className="text-lg font-bold text-accent">{mounted ? `${maxMoisture}%` : "-"}</p>
+            <p className="text-lg font-bold text-accent" suppressHydrationWarning>
+              {mounted ? `${maxMoisture}%` : "-"}
+            </p>
           </div>
           <div className="p-2 bg-secondary/50 rounded-lg text-center">
             <p className="text-xs text-muted-foreground">Mínima</p>
-            <p className="text-lg font-bold text-orange-400">{mounted ? `${minMoisture}%` : "-"}</p>
+            <p className="text-lg font-bold text-orange-400" suppressHydrationWarning>
+              {mounted ? `${minMoisture}%` : "-"}
+            </p>
           </div>
         </div>
 
